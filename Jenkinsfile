@@ -2,13 +2,8 @@ pipeline {
     agent any
 
     stages {
+        /*
         stage('Build') {
-            // This is an one line comment
-
-            /*
-            This is a multi-line comment
-            It can span multiple lines
-            */
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -26,6 +21,7 @@ pipeline {
                 '''
             }
         }
+        */
 
         stage('Test') {
             agent {
@@ -37,7 +33,6 @@ pipeline {
 
             steps {
                 sh '''
-                    echo "=== Test Stage ==="
                     test -f build/index.html
                     npm test
                 '''
@@ -55,7 +50,8 @@ pipeline {
             steps {
                 sh '''
                     npm install -g serve
-                    node_modules/.bin/serve -s build
+                    node_modules/.bin/serve -s build &
+                    sleep 10
                     npx playwright test
                 '''
             }
