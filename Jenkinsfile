@@ -3,6 +3,12 @@ pipeline {
 
     stages {
         stage('Build') {
+            // This is an one line comment
+
+            /*
+            This is a multi-line comment
+            It can span multiple lines
+            */
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -34,6 +40,23 @@ pipeline {
                     echo "=== Test Stage ==="
                     test -f build/index.html
                     npm test
+                '''
+            }
+        }
+
+        stage('E2E') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.53.0-noble'
+                    reuseNode true
+                }
+            }
+
+            steps {
+                sh '''
+                    npm install -g serve
+                    serve -s build
+                    npx playwright test
                 '''
             }
         }
