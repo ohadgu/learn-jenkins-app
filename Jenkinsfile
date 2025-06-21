@@ -76,7 +76,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    mpm install netlify-cli
+                    mpm install netlify-cli@20.1.1
                     node_modules/.bin/netlify --version
                 '''
             }
