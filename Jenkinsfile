@@ -99,15 +99,16 @@ pipeline {
                 }
             }
 
-        environment {
-            CI_ENVIRONMENT_URL = 'https://sweet-gnome-38f43d.netlify.app'
-        }
+            environment {
+                CI_ENVIRONMENT_URL = 'https://sweet-gnome-38f43d.netlify.app'
+            }
 
             steps {
                 sh '''
                     npx playwright test --reporter=html
                 '''
             }
+            
             post {
                 always {
                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E', reportTitles: '', useWrapperFileDirectly: true])
