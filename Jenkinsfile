@@ -82,7 +82,8 @@ pipeline {
 
             steps {
                 sh '''
-                    npm install netlify-cli@20.1.1 node-jq
+                    npm install netlify-cli@20.1.1
+                    npm install node-jq
                     node_modules/.bin/netlify --version
                     echo "Deploying to ** staging **. SITE_ID: $NETLIFY_SITE_ID"
                     npx netlify status
@@ -93,7 +94,7 @@ pipeline {
                     env.STAGING_URL = sh(
                         script: "npx node-jq -r '.deploy_url' deploy-output.json",
                         returnStdout: true
-                    ).trim()              
+                    ).trim()
                 }
             }
         }
