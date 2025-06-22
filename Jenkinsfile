@@ -83,7 +83,7 @@ pipeline {
         stage('Staging - Deploy & E2E') {
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    image 'my-playwright'
                     reuseNode true
                 }
             }
@@ -94,13 +94,11 @@ pipeline {
 
             steps {
                 sh '''
-                    npm install netlify-cli@20.1.1
-                    npm install node-jq
-                    node_modules/.bin/netlify --version
+                    netlify --version
                     echo "Deploying to staging. SITE_ID: $NETLIFY_SITE_ID"
-                    npx netlify status
-                    npx netlify deploy --dir=build --json > deploy-output.json
-                    CI_ENVIRONMENT_URL=$(npx node-jq -r '.deploy_url' deploy-output.json)
+                    netlify status
+                    netlify deploy --dir=build --json > deploy-output.json
+                    CI_ENVIRONMENT_URL=$(node-jq -r '.deploy_url' deploy-output.json)
                     npx playwright test --reporter=html
                 '''
             }
@@ -112,10 +110,10 @@ pipeline {
             }
         } 
 
-        stage('Prod Deploy & E2E') {
+        stage('Production - Deploy & E2E') {
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    image 'my-playwright'
                     reuseNode true
                 }
             }
@@ -127,11 +125,10 @@ pipeline {
             steps {
                 sh '''
                     node --version
-                    npm install netlify-cli@20.1.1
-                    node_modules/.bin/netlify --version
+                    netlify --version
                     echo "Deploying to ** production **. SITE_ID: $NETLIFY_SITE_ID"
-                    npx netlify status
-                    npx netlify deploy --dir=build --prod
+                    netlify status
+                    netlify deploy --dir=build --prod
                     npx playwright test --reporter=html
                 '''
             }
