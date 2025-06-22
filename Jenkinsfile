@@ -3,7 +3,8 @@ pipeline {
 
     environment {
         NETLIFY_SITE_ID = 'd7848e16-62a8-4c35-96af-581af18496b6'
-        NETLIFY_AUTH_TOKEN = credentials('netlify-token') 
+        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        REACT_APP_VERSION = '1.2.3'
     }
 
     stages {
@@ -72,33 +73,6 @@ pipeline {
             }
         }
 
-        // stage('Deploy staging') {
-        //     agent {
-        //         docker {
-        //             image 'node:18-alpine'
-        //             reuseNode true
-        //         }
-        //     }
-
-        //     steps {
-        //         sh '''
-        //             npm install netlify-cli@20.1.1
-        //             npm install node-jq
-        //             node_modules/.bin/netlify --version
-        //             echo "Deploying to ** staging **. SITE_ID: $NETLIFY_SITE_ID"
-        //             npx netlify status
-        //             npx netlify deploy --dir=build --json > deploy-output.json
-        //             npx node-jq -r '.deploy_url' deploy-output.json
-        //         '''
-        //         script {
-        //             env.STAGING_URL = sh(
-        //                 script: "npx node-jq -r '.deploy_url' deploy-output.json",
-        //                 returnStdout: true
-        //             ).trim()
-        //         }
-        //     }
-        // }
-
         stage('Staging - Deploy & E2E') {
             agent {
                 docker {
@@ -130,33 +104,6 @@ pipeline {
                 }
             }
         } 
-
-
-        stage('Approval') {
-            steps {
-                timeout(time: 15, unit: 'MINUTES') {
-                    input message: 'Do you wish to deploy to production?', ok: 'Yes, I am sure!'
-                }
-            }
-        }
-
-        // stage('Deploy production') {
-        //     agent {
-        //         docker {
-        //             image 'node:18-alpine'
-        //             reuseNode true
-        //         }
-        //     }
-        //     steps {
-        //         sh '''
-        //             npm install netlify-cli@20.1.1
-        //             node_modules/.bin/netlify --version
-        //             echo "Deploying to ** production **. SITE_ID: $NETLIFY_SITE_ID"
-        //             npx netlify status
-        //             npx netlify deploy --dir=build --prod
-        //         '''
-        //     }
-        // }
 
         stage('Prod Deploy & E2E') {
             agent {
